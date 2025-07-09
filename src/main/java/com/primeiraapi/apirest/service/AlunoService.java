@@ -17,7 +17,7 @@ public class AlunoService {
     public List<AlunoModel> buscarTodos() {
         return alunoRepository.findAll();
     }
-    //fiz acrecentacao dessa linha para baixo
+   
 
     public AlunoModel inserir(AlunoModel aluno) {
         return alunoRepository.save(aluno);
@@ -40,9 +40,9 @@ public class AlunoService {
     }
 
 
-    // CUIDADO: Este código pode apagar dados sem querer!
+    
 public AlunoModel editar(Long id, AlunoModel alunoAtualizado) {
-    alunoAtualizado.setIdPessoa(id); // Define o ID para que o JPA saiba que é uma atualização
+    alunoAtualizado.setIdPessoa(id); 
     return alunoRepository.save(alunoAtualizado);
 }
     

@@ -29,7 +29,7 @@ public class AlunoModel extends PessoaModel {
     @NotBlank(message = "Situacao é obrigatório") 
     private String situacao;
 
-    // Getters e Setters
+    
     public String getCurso() {
         return curso;
     }
