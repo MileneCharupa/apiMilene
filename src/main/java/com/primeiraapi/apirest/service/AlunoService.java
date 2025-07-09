@@ -1,5 +1,6 @@
 package com.primeiraapi.apirest.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,16 +14,36 @@ public class AlunoService {
     @Autowired
     private AlunoRepository alunoRepository;
 
-    public String salvar(AlunoModel aluno){
-        try {
-            alunoRepository.saveAndFlush(aluno);
-            return "Salvo com sucesso!";
-        } catch (Exception e) {
-            return e.getMessage();
-        }
+    public List<AlunoModel> buscarTodos() {
+        return alunoRepository.findAll();
     }
-    public Optional<AlunoModel> buscarPorId(Long id){
+    //fiz acrecentacao dessa linha para baixo
+
+    public AlunoModel inserir(AlunoModel aluno) {
+        return alunoRepository.save(aluno);
+    }
+
+    public void remover(Long id) {
+        alunoRepository.deleteById(id);
+    }
+
+    public Optional<AlunoModel> buscarPorId(Long id) {
         return alunoRepository.findById(id);
     }
 
+    public List<AlunoModel> buscarPorNome(String nome) {
+        return alunoRepository.findByNomeEstudanteContainingIgnoreCase(nome);
+    }
+
+    public List<AlunoModel> buscarPorCurso(String curso) {
+        return alunoRepository.findByCursoContainingIgnoreCase(curso);
+    }
+
+
+    // CUIDADO: Este código pode apagar dados sem querer!
+public AlunoModel editar(Long id, AlunoModel alunoAtualizado) {
+    alunoAtualizado.setIdPessoa(id); // Define o ID para que o JPA saiba que é uma atualização
+    return alunoRepository.save(alunoAtualizado);
+}
+    
 }

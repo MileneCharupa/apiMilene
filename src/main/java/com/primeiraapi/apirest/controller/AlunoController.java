@@ -1,50 +1,67 @@
 package com.primeiraapi.apirest.controller;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+
+import org.springframework.web.bind.annotation.*;
 
 import com.primeiraapi.apirest.model.AlunoModel;
 import com.primeiraapi.apirest.service.AlunoService;
 
-import jakarta.validation.Valid;
-
 @RestController
 @RequestMapping("/api/aluno")
 public class AlunoController {
+
     @Autowired
     private AlunoService alunoService;
 
-    @GetMapping("/{id}")
-    public ResponseEntity<AlunoModel> buscarPorId(@PathVariable Long id){
-        Optional<AlunoModel> aluno = alunoService.buscarPorId(id);
-        if (aluno.isPresent()) {
-            return new ResponseEntity<>(aluno.get(), HttpStatus.OK);
-        }
-        return new ResponseEntity<>(new AlunoModel(), HttpStatus.NOT_FOUND);
+    // Buscar todos
+    @GetMapping("/todos")
+    public ResponseEntity<List<AlunoModel>> buscarTodos() {
+        return ResponseEntity.ok(alunoService.buscarTodos());
     }
 
-    @PostMapping
-    public ResponseEntity<String> salvar(@Valid @RequestBody AlunoModel aluno){
-        String retorno = alunoService.salvar(aluno);
-        try {
-            return new ResponseEntity<>(retorno, HttpStatus.OK);    
-        } catch (Exception e) {
-            return new ResponseEntity<>(retorno, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    //fiz dessa linha para baixo
+
+    // Inserir aluno
+    @PostMapping("/inserir")
+    public ResponseEntity<AlunoModel> inserir(@RequestBody AlunoModel aluno) {
+        return ResponseEntity.ok(alunoService.inserir(aluno));
     }
-//salvar
-//buscar Tudo
-//buscar por id
-//buscar por nome
-//editar
-//remover
+
+    // Remover aluno
+    @DeleteMapping("/deletar/{id}")
+    public ResponseEntity<Void> remover(@PathVariable Long id) {
+        alunoService.remover(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    // Buscar por ID
+    @GetMapping("/buscarid/{id}")
+    public ResponseEntity<AlunoModel> buscarPorId(@PathVariable Long id) {
+        Optional<AlunoModel> aluno = alunoService.buscarPorId(id);
+        return aluno.map(ResponseEntity::ok)
+                    .orElse(ResponseEntity.notFound().build());
+    }
+
+    // Buscar por nome
+    @GetMapping("/nome/{nome}")
+    public ResponseEntity<List<AlunoModel>> buscarPorNome(@PathVariable String nome) {
+        return ResponseEntity.ok(alunoService.buscarPorNome(nome));
+    }
+
+    // Buscar por curso
+    @GetMapping("/curso/{curso}")
+    public ResponseEntity<List<AlunoModel>> buscarPorCurso(@PathVariable String curso) {
+        return ResponseEntity.ok(alunoService.buscarPorCurso(curso));
+    }
+
+    // Editar aluno
+    @PutMapping("/editar/{id}")
+    public ResponseEntity<AlunoModel> editar(@PathVariable Long id, @RequestBody AlunoModel aluno) {
+        return ResponseEntity.ok(alunoService.editar(id, aluno));
+    }
 }
